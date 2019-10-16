@@ -29,6 +29,7 @@ public class CompanyController {
     }
 
     @PostMapping(produces = {APPLICATION_JSON_VALUE})
+    @ResponseStatus(code = HttpStatus.CREATED)
     public Company add(@RequestBody Company company) {
         return companyRepository.save(company);
     }
