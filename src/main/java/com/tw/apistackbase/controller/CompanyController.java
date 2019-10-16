@@ -16,8 +16,20 @@ public class CompanyController {
         return  companyRepository.findAll();
     }
 
+    @GetMapping(value = "/{value}",produces = {"application/json"})
+    public Company getCompanyByName(@PathVariable String name) {
+        return  companyRepository.findOneByName(name);
+    }
+
     @PostMapping(produces = {"application/json"})
     public Company add(@RequestBody Company company) {
         return companyRepository.save(company);
     }
+
+    @DeleteMapping(value = "/{id}",produces = {"application/json"})
+    public String deleteCompany(@PathVariable Long id) {
+        companyRepository.deleteById(id);
+        return  "Deleted";
+    }
 }
+
