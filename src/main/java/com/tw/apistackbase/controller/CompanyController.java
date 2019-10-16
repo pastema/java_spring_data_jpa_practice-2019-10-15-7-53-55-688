@@ -3,6 +3,9 @@ package com.tw.apistackbase.controller;
 import com.tw.apistackbase.core.Company;
 import com.tw.apistackbase.repository.CompanyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -30,17 +33,24 @@ public class CompanyController {
         return companyRepository.save(company);
     }
 
-    @PutMapping(value = "/{id}",produces = {APPLICATION_JSON_VALUE})
-    public Company updateCompany(@RequestBody Company company, @PathVariable Long id){
-        companyRepository.findById(id).ifPresent(value -> company.setId(value.getId()));
-        return companyRepository.save(company);
+    @PatchMapping(value = "/{id}", produces = APPLICATION_JSON_VALUE)
+    public HttpEntity updateCompany(@RequestBody Company company, @PathVariable Long id) {
+        Optional<Company> updatedCompany = companyRepository.findById(id);
+        if (updatedCompany.isPresent()) {
+            updatedCompany.get().setName(company.getName());
+            companyRepository.save(updatedCompany.get());
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
 
     @DeleteMapping(value = "/{id}",produces = {APPLICATION_JSON_VALUE})
-    public String deleteCompany(@PathVariable Long id) {
-        companyRepository.deleteById(id);
-        return  "Deleted";
+    public HttpEntity deleteCompany(@PathVariable Long id) {
+        Optional<Company> company = companyRepository.findById(id);
+        if (company.isPresent()) {
+            companyRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
-
