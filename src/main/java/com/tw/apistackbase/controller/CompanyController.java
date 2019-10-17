@@ -18,14 +18,14 @@ public class CompanyController {
     @Autowired
     CompanyRepository companyRepository;
 
-    @GetMapping(produces = {APPLICATION_JSON_VALUE})
+    @GetMapping(value = "/all", produces = {APPLICATION_JSON_VALUE})
     public Iterable<Company> list() {
         return  companyRepository.findAll();
     }
 
-    @GetMapping(value = "/{value}",produces = {APPLICATION_JSON_VALUE})
-    public Company getCompanyByName(@PathVariable String name) {
-        return  companyRepository.findOneByName(name);
+    @GetMapping(produces = {APPLICATION_JSON_VALUE})
+    public Company getCompanyByName(@RequestParam String name) {
+        return  companyRepository.findByNameContaining(name);
     }
 
     @PostMapping(produces = {APPLICATION_JSON_VALUE})
